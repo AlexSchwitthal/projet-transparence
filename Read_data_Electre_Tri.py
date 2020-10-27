@@ -8,7 +8,10 @@ This is a temporary script file.
 A = 5
 E = 1
 import xlrd
-list_cereals_labels = []
+import xlwt
+from datetime import datetime
+
+list_cereals_labels = {}
 def readDB1():
     loc = ("Datasets/OpenFood_Petales.xlsx")
  
@@ -16,14 +19,15 @@ def readDB1():
     sheet = wb.sheet_by_index(0)
 
     
-    list_cereals_labels.append(sheet.row_values(0)[0])
-    list_cereals_labels.append(sheet.row_values(0)[2])
-    list_cereals_labels.append(sheet.row_values(0)[3])
-    list_cereals_labels.append(sheet.row_values(0)[4])
-    list_cereals_labels.append(sheet.row_values(0)[5])
-    list_cereals_labels.append(sheet.row_values(0)[8])
-    list_cereals_labels.append(sheet.row_values(0)[7])
-    list_cereals_labels.append(sheet.row_values(0)[6])
+    list_cereals_labels['product_name']=sheet.row_values(0)[0]
+    list_cereals_labels['nutriscore']=sheet.row_values(0)[2]
+    list_cereals_labels['criteres']=[]
+    list_cereals_labels['criteres'].append(sheet.row_values(0)[3])
+    list_cereals_labels['criteres'].append(sheet.row_values(0)[4])
+    list_cereals_labels['criteres'].append(sheet.row_values(0)[5])
+    list_cereals_labels['criteres'].append(sheet.row_values(0)[8])
+    list_cereals_labels['criteres'].append(sheet.row_values(0)[7])
+    list_cereals_labels['criteres'].append(sheet.row_values(0)[6])
 
 
     #print(list_cereals_labels)
@@ -41,13 +45,6 @@ def readDB1():
         cereal['criteres'].append(sheet.row_values(i)[6]) 
         list_cereals.append(cereal)
     return list_cereals
-
-
-loc = ("Datasets/openfoodfacts_simplified_database.xlsx")
-
-wb = xlrd.open_workbook(loc)
-sheet = wb.sheet_by_index(0)
-
 
 label = {}
 def readOFD_SD():
@@ -140,11 +137,40 @@ def readOFD_SD():
     #print(len(list_false))
     return list_items
 
-list_items = readOFD_SD() 
-#print(list_items)
-print(label)  
-#print(len(list_items))  
-list_cereals = readDB1()
+
+def writeDB(name, label, list_items):
+
+    workbook = xlwt.Workbook()
+    sheet = workbook.add_sheet('test')
+    index = 0
+    for key ,value in label.items():
+        if key == 'criteres':
+            for i in range(len(label['criteres'])):
+                sheet.write(0, index, label['criteres'][i])
+                index += 1
+        else :
+            sheet.write(0, index, key)
+            index += 1
+    sheet.write(0, index, 'pessimist_score')
+    sheet.write(0, index+1, 'optimist_score')
+    count = 1
+    for item in list_items:
+        index = 0
+        for key ,value in item.items():
+            if key == 'nutriscore' or key == 'pessimist_score' or key == 'optimist_score':
+                sheet.write(count, index, chr(102-value))
+                index += 1
+            elif key == 'criteres':
+                for i in range(len(item['criteres'])):
+                    sheet.write(count, index, item['criteres'][i])
+                    index += 1
+            else :
+                sheet.write(count, index, value)
+                index += 1
+        count += 1        
+    id = datetime.now().strftime("%d_%m_%H_%M")            
+    workbook.save(name + '_' + id + '.xls')
+      
 
 #print(list_cereals_labels) 
 #ordonné de critère 1 à critère 6
@@ -229,9 +255,15 @@ def defineElectreScore(list_aliments, list_poids, list_profils, seuil):
            # print(aliment['nutriscore'])
            # print(aliment['pessimist_score'])
            # print(aliment['optimist_score'])
-    
-#defineElectreScore(list_items, list_poids, list_profils, 0.51) 
-#print(list_cereals)   
+ 
+list_items = readOFD_SD() 
+defineElectreScore(list_items, list_poids, list_profils, 0.51)  
+#writeDB('Datasets/DB2', label, list_items) 
+
+list_cereals = readDB1()  
+defineElectreScore(list_cereals, list_poids, list_profils, 0.51)  
+#writeDB('Datasets/DB1', list_cereals_labels, list_cereals) 
+
 #print("pessimistic")
 #print(pessimisticMajoritySorting(aliment, list_profils, list_poids, 0.5)) 
 #print("optimistic")
