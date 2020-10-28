@@ -137,6 +137,128 @@ def readOFD_SD():
     #print(len(list_false))
     return list_items
 
+label_OFD = {}
+def readOFD():
+    loc = ("Datasets/openfoodfacts_10000_foods.xlsx")
+ 
+    wb = xlrd.open_workbook(loc)
+    sheet = wb.sheet_by_index(0)
+    i = 0
+    
+    label_OFD['product_name']=sheet.row_values(i)[5]
+    label_OFD['groupe']=sheet.row_values(i)[45]
+    label_OFD['sous-groupe']=sheet.row_values(i)[46]
+    label_OFD['nutriscore']=sheet.row_values(i)[43]
+    label_OFD['nova']=sheet.row_values(i)[44]
+    label_OFD['nb_additifs']=sheet.row_values(i)[35]
+    label_OFD['criteres']=[]
+    label_OFD['criteres'].append(sheet.row_values(i)[57])
+    label_OFD['criteres'].append(sheet.row_values(i)[60])
+    label_OFD['criteres'].append(sheet.row_values(i)[96])
+    label_OFD['criteres'].append(sheet.row_values(i)[111])
+    label_OFD['criteres'].append(sheet.row_values(i)[106])
+    label_OFD['criteres'].append(sheet.row_values(i)[105])
+    label_OFD['criteres_feux'] = []
+    label_OFD['criteres_feux'].append(sheet.row_values(i)[59])
+    label_OFD['criteres_feux'].append(sheet.row_values(i)[60])
+    label_OFD['criteres_feux'].append(sheet.row_values(i)[96])
+    label_OFD['criteres_feux'].append(sheet.row_values(i)[110])
+    
+    
+    list_items =[]
+    list_false=[]
+    count1 = 0
+    count2 = 0
+    count3 = 0
+    count4 = 0 
+    count5 = 0
+    for i in range(1, sheet.nrows):
+        valid = True
+        item = {}
+    
+        if len(str(sheet.row_values(i)[0])) == 0:
+            sheet.row_values(i)[0]
+            valid = False
+            
+        if len(str(sheet.row_values(i)[5])) == 0:
+            sheet.row_values(i)[5]
+            valid = False
+        if len(str(sheet.row_values(i)[45])) == 0:
+            sheet.row_values(i)[45]
+            valid = False
+        if len(str(sheet.row_values(i)[46])) == 0:
+            sheet.row_values(i)[46]
+            valid = False
+        if len(str(sheet.row_values(i)[43])) == 0:
+            sheet.row_values(i)[43]
+            valid = False
+        if len(str(sheet.row_values(i)[44])) == 0:
+            sheet.row_values(i)[44]
+            valid = False
+        if len(str(sheet.row_values(i)[35])) == 0:
+            sheet.row_values(i)[35]
+            valid = False
+        if len(str(sheet.row_values(i)[57])) == 0:
+            sheet.row_values(i)[57]
+            valid = False
+        if len(str(sheet.row_values(i)[60])) == 0:
+            sheet.row_values(i)[60]
+            valid = False
+        if len(str(sheet.row_values(i)[96])) == 0:
+            sheet.row_values(i)[96]
+            valid = False
+        if len(str(sheet.row_values(i)[111])) == 0:
+            sheet.row_values(i)[111]
+            valid = False
+        if len(str(sheet.row_values(i)[106])) == 0:
+            sheet.row_values(i)[106]
+            valid = False    
+        if len(str(sheet.row_values(i)[105])) == 0:
+            sheet.row_values(i)[105]
+            valid = False
+        if len(str(sheet.row_values(i)[59])) == 0:
+            sheet.row_values(i)[59]
+            valid = False
+        if len(str(sheet.row_values(i)[110])) == 0:
+            sheet.row_values(i)[110]
+            valid = False  
+        if not valid:
+            list_false.append(item)
+            
+        if valid :
+            item['product_name']=sheet.row_values(i)[5]
+            item['groupe']=sheet.row_values(i)[45]
+            item['sous-groupe']=sheet.row_values(i)[46]
+            item['nutriscore']=102-ord(sheet.row_values(i)[43])
+            if item['nutriscore'] == 1:
+                count1 += 1
+            if item['nutriscore'] == 2:
+                count2 += 1 
+            if item['nutriscore'] == 3:
+                count3 += 1
+            if item['nutriscore'] == 4:
+                count4 += 1
+            if item['nutriscore'] == 5:
+                count5 += 1
+            item['nova']=sheet.row_values(i)[44]
+            item['nb_additifs']=sheet.row_values(i)[35]
+            item['criteres']=[]
+            item['criteres'].append(sheet.row_values(i)[57])
+            item['criteres'].append(sheet.row_values(i)[60])
+            item['criteres'].append(sheet.row_values(i)[96])
+            item['criteres'].append(sheet.row_values(i)[111])
+            item['criteres'].append(sheet.row_values(i)[106])
+            item['criteres'].append(sheet.row_values(i)[105])
+            item['criteres_feux'] = []
+            item['criteres_feux'].append(sheet.row_values(i)[59])
+            item['criteres_feux'].append(sheet.row_values(i)[60])
+            item['criteres_feux'].append(sheet.row_values(i)[96])
+            item['criteres_feux'].append(sheet.row_values(i)[110])
+            list_items.append(item)
+    print(count1, count2, count3, count4, count5)
+    print(len(list_false))
+    
+    return list_items
 
 def writeDB(name, label, list_items):
 
@@ -148,11 +270,19 @@ def writeDB(name, label, list_items):
             for i in range(len(label['criteres'])):
                 sheet.write(0, index, label['criteres'][i])
                 index += 1
+        elif key == 'criteres_feux':
+            for i in range(len(label['criteres_feux'])):
+                sheet.write(0, index, label['criteres_feux'][i])
+                index += 1        
         else :
             sheet.write(0, index, key)
             index += 1
-    sheet.write(0, index, 'pessimist_score')
-    sheet.write(0, index+1, 'optimist_score')
+    #sheet.write(0, index, 'pessimist_score')
+    #sheet.write(0, index+1, 'optimist_score')
+    #sheet.write(0, index+2, 'couleur_lipides')
+    #sheet.write(0, index+3, 'couleur_gras_satures')
+    #sheet.write(0, index+4, 'couleur_sucres')
+    #sheet.write(0, index+5, 'couleur_sel')
     count = 1
     for item in list_items:
         index = 0
@@ -163,6 +293,10 @@ def writeDB(name, label, list_items):
             elif key == 'criteres':
                 for i in range(len(item['criteres'])):
                     sheet.write(count, index, item['criteres'][i])
+                    index += 1
+            elif key == 'criteres_feux':
+                for i in range(len(item['criteres_feux'])):
+                    sheet.write(count, index, item['criteres_feux'][i])
                     index += 1
             else :
                 sheet.write(count, index, value)
@@ -246,7 +380,10 @@ def optimisticMajoritySorting(aliment, list_profils, list_poids, seuil):
             #print("Classe de l'aliment :", i)
             return i 
        
-def defineElectreScore(list_aliments, list_poids, list_profils, seuil):
+def defineElectreScore(list_aliments, list_poids, list_profils, seuil, label):
+    label['pessimist_score'] = 'pessimist_score'
+    label['optimist_score'] = 'optimist_score'
+    
     for aliment in list_aliments:
         aliment['pessimist_score'] = pessimisticMajoritySorting(aliment['criteres'], list_profils, list_poids, seuil)
         aliment['optimist_score'] = optimisticMajoritySorting(aliment['criteres'], list_profils, list_poids, seuil)
@@ -255,14 +392,70 @@ def defineElectreScore(list_aliments, list_poids, list_profils, seuil):
            # print(aliment['nutriscore'])
            # print(aliment['pessimist_score'])
            # print(aliment['optimist_score'])
- 
-list_items = readOFD_SD() 
-defineElectreScore(list_items, list_poids, list_profils, 0.51)  
+
+def feuxTricolore(aliment, critere):
+    n = 1.0
+    if aliment['groupe'] == "Beverages":
+        n = 2.0
+        
+    if critere == "fat_100g":
+        if aliment['criteres_feux'][0] <= 3/n:
+            return "green"
+        
+        elif aliment['criteres_feux'][0] <= 20/n:
+            return "orange"
+        else: 
+            return "red"  
+        
+    if critere == "saturated-fat_100g":
+        if aliment['criteres_feux'][1] <= 1.5/n:
+            return "green"
+        
+        elif aliment['criteres_feux'][1] <= 5/n:
+            return "orange"
+        else: 
+            return "red" 
+        
+    if critere == "sugars_100g":
+        if aliment['criteres_feux'][2] <= 5/n:
+            return "green"
+        
+        elif aliment['criteres_feux'][2] <= 12.5/n:
+            return "orange"
+        else: 
+            return "red" 
+     
+    if critere == "salt_100g":
+        if aliment['criteres_feux'][3] <= 0.3/n:
+            return "green"
+        elif aliment['criteres_feux'][3] <= 1.5/n:
+            return "orange"
+        else: 
+            return "red"    
+
+def defineFeuxTricolore(list_aliments, label):
+    label['couleur_lipides'] = 'couleur_lipides'
+    label['couleur_gras_satures'] = 'couleur_gras_satures'
+    label['couleur_sucres'] = 'couleur_sucres'
+    label['couleur_sel'] = 'couleur_sel'
+    for aliment in list_aliments:
+        aliment['couleur_lipides'] = feuxTricolore(aliment, "fat_100g")
+        aliment['couleur_gras_satures'] = feuxTricolore(aliment, "saturated-fat_100g")
+        aliment['couleur_sucres'] = feuxTricolore(aliment, "sugars_100g")
+        aliment['couleur_sel'] = feuxTricolore(aliment, "salt_100g")
+        
+#list_items = readOFD_SD() 
+#defineElectreScore(list_items, list_poids, list_profils, 0.51, label)  
 #writeDB('Datasets/DB2', label, list_items) 
 
-list_cereals = readDB1()  
-defineElectreScore(list_cereals, list_poids, list_profils, 0.51)  
+#list_cereals = readDB1()  
+#defineElectreScore(list_cereals, list_poids, list_profils, 0.51, list_cereals_labels)  
 #writeDB('Datasets/DB1', list_cereals_labels, list_cereals) 
+
+#list_items2 = readOFD()
+#defineElectreScore(list_items2, list_poids, list_profils, 0.51, label_OFD)
+#defineFeuxTricolore(list_items2, label_OFD)  
+#writeDB('Datasets/DB3', label_OFD, list_items2) 
 
 #print("pessimistic")
 #print(pessimisticMajoritySorting(aliment, list_profils, list_poids, 0.5)) 
