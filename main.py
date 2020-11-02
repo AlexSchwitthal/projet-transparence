@@ -21,21 +21,28 @@ list_profils = [[100,0,0,0,100,100],
                 [1850,20,4,0.6,3,2.5],
                 [10000,100,100,100,0,0]]
 
-seuil1 = 0.7
+#seuil1 = 0.7
 list_cereals, list_cereals_labels = readDB1()  
-defineElectreScore(list_cereals, list_poids, list_profils, seuil1, list_cereals_labels)  
-writeDB('Datasets/DB1_score_lamdba_'+str(seuil1), list_cereals_labels, list_cereals) 
+#defineElectreScore(list_cereals, list_poids, list_profils, seuil1, list_cereals_labels)  
+#writeDB('Datasets/DB1_score_lamdba_'+str(seuil1), list_cereals_labels, list_cereals) 
 
-seuil2 = 0.7
+#seuil2 = 0.7
 list_items2, label_DB2 = readDB2()
-defineElectreScore(list_items2, list_poids, list_profils, seuil2, label_DB2)
-defineFeuxTricolore(list_items2, label_DB2)  
-writeDB('Datasets/DB2_score_lamdba_'+str(seuil2), label_DB2, list_items2) 
+#defineElectreScore(list_items2, list_poids, list_profils, seuil2, label_DB2)
+#defineFeuxTricolore(list_items2, label_DB2)  
+#writeDB('Datasets/DB2_score_lamdba_'+str(seuil2), label_DB2, list_items2) 
 
-seuil3 = 0.7
-list_items3, label_DB3 = readDB3()
-defineElectreScore(list_items3, list_poids, list_profils, seuil3, label_DB3)
-defineFeuxTricolore(list_items3, label_DB3)  
-writeDB('Datasets/DB3_score_lamdba_'+str(seuil3), label_DB3, list_items3) 
-       
-        
+#seuil3 = 0.7
+#list_items3, label_DB3 = readDB3()
+#defineElectreScore(list_items3, list_poids, list_profils, seuil3, label_DB3)
+#defineFeuxTricolore(list_items3, label_DB3)  
+#writeDB('Datasets/DB3_score_lamdba_'+str(seuil3), label_DB3, list_items3) 
+     
+print("\n\n\n ========= STAT REPARTITION ====== \n")
+getRepartitionCategorie("nutriscore", list_items2)
+print("\n")
+getRepartitionCategorie("nova", list_items2)    
+print("\n\n\n ======= NUTRISCORE ======")
+compareNutriscoreNova(list_items2)
+print("\n\n\n====== NOVA =======")
+compareNovaNutriscore(list_items2)

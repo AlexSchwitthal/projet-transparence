@@ -42,7 +42,7 @@ def readDB1():
         cereal['criteres'].append(sheet.row_values(i)[7])
         cereal['criteres'].append(sheet.row_values(i)[6]) 
         list_cereals.append(cereal)
-    print(list_cereals_labels)    
+    #print(list_cereals_labels)    
     return list_cereals, list_cereals_labels
 
 def readDB2():

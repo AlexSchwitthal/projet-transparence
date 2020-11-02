@@ -127,3 +127,72 @@ def defineFeuxTricolore(list_aliments, label):
         aliment['color_sugars'] = feuxTricolore(aliment, "sugars_100g")
         aliment['color_salt'] = feuxTricolore(aliment, "salt_100g")
         
+# ----------------------------------
+# ANALYSE
+# ----------------------------------
+
+def convertNutriscore(number, categorie):
+    if(categorie == "nutriscore"):
+        if(number == 1):
+            return "e"
+        elif(number == 2):
+            return "d"
+        elif(number == 3):
+            return "c"
+        elif(number == 4):
+            return "b"
+        elif(number == 5):
+            return "a"
+    else:
+        return number
+    
+def getRepartitionCategorie(categorie, list_db):
+    if(categorie == "nutriscore"):    
+        list_categorie = [0] * 6  
+    elif(categorie == "nova"):
+        list_categorie = [0] * 5
+    list_categorie[0] = len(list_db)
+      
+    for i in range (len(list_db)):
+        value = int(list_db[i][categorie])
+        list_categorie[value] = list_categorie[value] + 1
+    print("il y a un total de ", list_categorie[0], " produits")
+    for i in range (len(list_categorie)-1, 0, -1):
+        percent = "{:.2f}".format(list_categorie[i] / list_categorie[0] * 100)
+        value = 0
+        print("il y a ", list_categorie[i], "(", percent, "%) elements de la catégorie ", convertNutriscore(i, categorie), "(" , categorie, ")")
+        
+def compareNutriscoreNova(list_db):
+    for i in range(5, 0, -1):
+        list_nutriscore = getListByScore(i, "nutriscore", list_db)
+        list_nova = [0,0,0,0]
+        for j in range(len(list_nutriscore)):
+            value = int(list_nutriscore[j]["nova"])
+            list_nova[value-1] = list_nova[value-1] + 1
+        print("")
+        print("pour les produits de la catégorie ", convertNutriscore(i, "nutriscore"), "(nutriscore), il y a :")
+        for j in range(len(list_nova)):
+            percent = "{:.2f}".format(list_nova[j] / len(list_nutriscore) * 100)
+            print(list_nova[j], "(", percent, "%) produits de la categorie nova ", j+1)
+    
+def compareNovaNutriscore(list_db):
+    for i in range(1, 5):
+        list_nova = getListByScore(i, "nova", list_db)
+        list_nutriscore = [0,0,0,0,0]
+        for j in range(len(list_nova)):
+            value = int(list_nova[j]["nutriscore"])
+            list_nutriscore[value-1] = list_nutriscore[value-1] + 1
+        print("")
+        print("pour les produits de la categorie ", i, "(nova), il y a :")
+        for j in range(len(list_nutriscore)):
+            percent = 0;
+            if(len(list_nova) != 0):
+                percent = "{:.2f}".format(list_nutriscore[j] / len(list_nova) * 100)
+            print(list_nutriscore[j], "(", percent, "%) produits de la categorie nutriscore ", convertNutriscore(j+1, "nutriscore"))
+    
+def getListByScore(score, categorie, list_db):
+    list_elements = []
+    for i in range (len(list_db)):
+        if(int(list_db[i][categorie]) == score):
+            list_elements.append(list_db[i])
+    return list_elements
