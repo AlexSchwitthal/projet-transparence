@@ -160,9 +160,9 @@ def getCritereNameByNumber(number):
     if(number == 0):
         return "fat_100g"
     elif(number == 1):
-        return "saturated_fat_100g1"
+        return "saturated-fat_100g"
     elif(number == 2):
-        return "sugars_100g1"
+        return "sugars_100g"
     elif(number == 3):
         return "salt_100g"
 
@@ -244,22 +244,25 @@ def compareNutriscoreFeux(list_db):
         print("")
 
 # pour chaque categorie nutriscore, donne le nombre d'aliments ayant au moins 1 feu de la categorie donnée
-def nutriscoreByColor(list_db, colorToSearch):
+def nutriscoreByColor(list_db, colorToSearch, numberToReach):
     for i in range(5, 0, -1):
         list_nutriscore = getListByScore(i, "nutriscore", list_db)
         number_of_color = 0
         for j in range(len(list_nutriscore)):
+          number_of_color_elements = 0
           for k in range(4):
               critere_name = getCritereNameByNumber(k)
               color = feuxTricolore(list_nutriscore[j], critere_name)
               if(color == colorToSearch):
-                  number_of_color = number_of_color + 1
-                  break
+                  number_of_color_elements = number_of_color_elements + 1
+                  if(number_of_color_elements >= numberToReach):
+                      number_of_color = number_of_color + 1
+                      break
           else:
               continue
-        percent = "{:.2f}".format(number_of_color / len(list_nutriscore) * 100)
+        percent = "{:.2f}".format(number_of_color / len(list_nutriscore)  * 100)
         print("pour les ", len(list_nutriscore), " produits de la categorie ", convertNutriscore(i, "nutriscore"), "(nutriscore), il y a : ")  
-        print(number_of_color, " (", percent, "%) ayant au moins 1 feu de couleur ", colorToSearch, "\n")
+        print(number_of_color, " (", percent, "%) ayant au moins ", numberToReach, " feu de couleur ", colorToSearch, "\n")
               
                          
             
