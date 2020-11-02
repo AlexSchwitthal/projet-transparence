@@ -131,21 +131,42 @@ def defineFeuxTricolore(list_aliments, label):
 # ANALYSE
 # ----------------------------------
 
+# convertie le nombre nutriscore en sa lettre correspondante
 def convertNutriscore(number, categorie):
     if(categorie == "nutriscore"):
         if(number == 1):
-            return "e"
+            return "E"
         elif(number == 2):
-            return "d"
+            return "D"
         elif(number == 3):
-            return "c"
+            return "C"
         elif(number == 4):
-            return "b"
+            return "B"
         elif(number == 5):
-            return "a"
+            return "A"
     else:
         return number
-    
+ 
+# retourne la liste des produits ayant un score donné dans une catégorie donnée
+def getListByScore(score, categorie, list_db):
+    list_elements = []
+    for i in range (len(list_db)):
+        if(int(list_db[i][categorie]) == score):
+            list_elements.append(list_db[i])
+    return list_elements
+
+
+def getCritereNameByNumber(number):
+    if(number == 0):
+        return "fat_100g"
+    elif(number == 1):
+        return "saturated_fat_100g1"
+    elif(number == 2):
+        return "sugars_100g1"
+    elif(number == 3):
+        return "salt_100g"
+
+# regarde la répartition de la catégorie donnée sur l'ensemble des produits
 def getRepartitionCategorie(categorie, list_db):
     if(categorie == "nutriscore"):    
         list_categorie = [0] * 6  
@@ -161,7 +182,8 @@ def getRepartitionCategorie(categorie, list_db):
         percent = "{:.2f}".format(list_categorie[i] / list_categorie[0] * 100)
         value = 0
         print("il y a ", list_categorie[i], "(", percent, "%) elements de la catégorie ", convertNutriscore(i, categorie), "(" , categorie, ")")
-        
+     
+# pour chaque categorie de nutriscore, renvoie la répartition nova des produits
 def compareNutriscoreNova(list_db):
     for i in range(5, 0, -1):
         list_nutriscore = getListByScore(i, "nutriscore", list_db)
@@ -174,7 +196,8 @@ def compareNutriscoreNova(list_db):
         for j in range(len(list_nova)):
             percent = "{:.2f}".format(list_nova[j] / len(list_nutriscore) * 100)
             print(list_nova[j], "(", percent, "%) produits de la categorie nova ", j+1)
-    
+ 
+# pour chaque categorie nova, renvoie la répartition du nutriscore des produits
 def compareNovaNutriscore(list_db):
     for i in range(1, 5):
         list_nova = getListByScore(i, "nova", list_db)
@@ -189,10 +212,54 @@ def compareNovaNutriscore(list_db):
             if(len(list_nova) != 0):
                 percent = "{:.2f}".format(list_nutriscore[j] / len(list_nova) * 100)
             print(list_nutriscore[j], "(", percent, "%) produits de la categorie nutriscore ", convertNutriscore(j+1, "nutriscore"))
-    
-def getListByScore(score, categorie, list_db):
-    list_elements = []
-    for i in range (len(list_db)):
-        if(int(list_db[i][categorie]) == score):
-            list_elements.append(list_db[i])
-    return list_elements
+
+
+# pour chaque categorie nutriscore, donne la répartition des feux sur la catégorie
+def compareNutriscoreFeux(list_db):
+    for i in range(5, 0, -1):   
+        list_nutriscore = getListByScore(i, "nutriscore", list_db)
+        list_feux = [0,0,0]
+        for j in range(len(list_nutriscore)):
+            for k in range(4):    
+                critere_name = getCritereNameByNumber(k)
+                color = feuxTricolore(list_nutriscore[j], critere_name)
+                if(color == "green"):
+                    list_feux[0] = list_feux[0] + 1
+                elif(color == "orange"):
+                    list_feux[1] = list_feux[1] + 1
+                elif(color == "red"):
+                    list_feux[2] = list_feux[2] + 1
+        print("pour les produits de la categorie ", convertNutriscore(i, "nutriscore"), "(nutriscore), il y a : ")   
+        total = list_feux[0] + list_feux[1] + list_feux[2]
+        for j in range(3):
+            color = "";
+            if(j == 0):
+                color = "vert"
+            elif(j == 1):
+                color = "orange"
+            elif(j == 2):
+                color = "rouge"
+            percent = "{:.2f}".format(list_feux[j] / total * 100)
+            print(list_feux[j], " (", percent ,"%) feux ", color)
+        print("")
+
+# pour chaque categorie nutriscore, donne le nombre d'aliments ayant au moins 1 feu de la categorie donnée
+def nutriscoreByColor(list_db, colorToSearch):
+    for i in range(5, 0, -1):
+        list_nutriscore = getListByScore(i, "nutriscore", list_db)
+        number_of_color = 0
+        for j in range(len(list_nutriscore)):
+          for k in range(4):
+              critere_name = getCritereNameByNumber(k)
+              color = feuxTricolore(list_nutriscore[j], critere_name)
+              if(color == colorToSearch):
+                  number_of_color = number_of_color + 1
+                  break
+          else:
+              continue
+        percent = "{:.2f}".format(number_of_color / len(list_nutriscore) * 100)
+        print("pour les ", len(list_nutriscore), " produits de la categorie ", convertNutriscore(i, "nutriscore"), "(nutriscore), il y a : ")  
+        print(number_of_color, " (", percent, "%) ayant au moins 1 feu de couleur ", colorToSearch, "\n")
+              
+                         
+            
