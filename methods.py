@@ -166,6 +166,27 @@ def getCritereNameByNumber(number):
     elif(number == 3):
         return "salt_100g"
 
+def converYukaInNutriscore(yuka):
+    if(yuka <= 20):
+        return 1
+    elif(yuka <= 40):
+        return 2
+    elif(yuka <= 60):
+        return 3
+    elif(yuka <= 80):
+        return 4
+    elif(yuka <= 100):
+        return 5
+    
+def duelNutriscoreYuka(nutriscore, yuka):
+    conversion_yuka = converYukaInNutriscore(yuka)
+    if(conversion_yuka == nutriscore):
+        return "equals"
+    elif(conversion_yuka < nutriscore):
+        return "yuka"
+    else:
+        return "nutriscore"
+
 # regarde la répartition de la catégorie donnée sur l'ensemble des produits
 def getRepartitionCategorie(categorie, list_db):
     if(categorie == "nutriscore"):    
@@ -207,7 +228,7 @@ def compareNovaNutriscore(list_db):
             list_nutriscore[value-1] = list_nutriscore[value-1] + 1
         print("")
         print("pour les produits de la categorie ", i, "(nova), il y a :")
-        for j in range(len(list_nutriscore)):
+        for j in range(4, -1, -1):
             percent = 0;
             if(len(list_nova) != 0):
                 percent = "{:.2f}".format(list_nutriscore[j] / len(list_nova) * 100)
@@ -265,4 +286,86 @@ def nutriscoreByColor(list_db, colorToSearch, numberToReach):
         print(number_of_color, " (", percent, "%) ayant au moins ", numberToReach, " feu de couleur ", colorToSearch, "\n")
               
                          
+def compareNutriscoreYuka(list_db):
+    size = len(list_db)
+    total_yuka = 0
+    total_nutriscore = 0
+    total_egalite = 0
+    avg_yuka = 0
+    avg_nutriscore = 0
+    for i in range (size):
+        avg_yuka = avg_yuka + list_db[i]['score_yuka']
+        avg_nutriscore = avg_nutriscore + list_db[i]['nutriscore']
+        result = duelNutriscoreYuka(list_db[i]['nutriscore'], list_db[i]['score_yuka'])
+        if(result == "yuka"):
+            total_yuka = total_yuka + 1
+        elif(result == "nutriscore"):
+            total_nutriscore = total_nutriscore + 1
+        elif(result == "equals"):
+            total_egalite = total_egalite + 1
+    percent_yuka = "{:.2f}".format(total_yuka / size * 100)
+    percent_nutriscore = "{:.2f}".format(total_nutriscore / size * 100)
+    percent_egalite = "{:.2f}".format(total_egalite / size * 100)
+    print("il y a un total de ", size, " produits")
+    print("la moyenne de note yuka sur les produits est de ", "{:.2f}".format(avg_yuka / size))
+    print("la moyenne de note nutriscore sur les produits est de ", "{:.2f}".format(avg_nutriscore / size))
+    print("\ndans ", total_yuka, "(", percent_yuka, "%) cas, yuka est plus sévère que nutriscore")
+    print("dans ", total_nutriscore, "(", percent_nutriscore, "%) cas, nutriscore est plus sévère que yuka")
+    print("dans ", total_egalite,"(", percent_egalite, "%) cas, les deux note sont similaires")
             
+def compareYukaNova(list_db):
+    for i in range(1, 5):
+        score_yuka = 0
+        nb_yuka = 0
+        list_nova = getListByScore(i, "nova", list_db)
+        for j in range(len(list_nova)):
+            value = int(list_nova[j]["score_yuka"])
+            score_yuka = score_yuka + value
+            nb_yuka = nb_yuka + 1
+        avg_yuka = 0
+        if len(list_nova) > 0:
+            avg_yuka = "{:.2f}".format(score_yuka / nb_yuka)
+        print("")
+        print("pour les ", len(list_nova), " produits de la categorie ", i, "(nova), il y a :")
+        print("une moyenne de score des produits yuka de ", avg_yuka)
+
+def getRepartitionBio(list_db):
+    nbBio = 0
+    size = len(list_db)
+    for i in range(size):
+        if(list_db[i]['label_bio'] == 'y'):
+            nbBio = nbBio + 1
+    percent = "{:.2f}".format(nbBio / size * 100)
+    notBioPercent = "{:.2f}".format((size - nbBio) / size * 100)
+    print("il y a un total de ", size, " produits")
+    print(nbBio, "(", percent, "%) produits sont bio")
+    print((size-nbBio), "(", notBioPercent, "%) ne sont pas bio")
+                 
+def compareNutriscoreBio(list_db):
+    for i in range(5, 0, -1):
+        list_nutriscore = getListByScore(i, "nutriscore", list_db)
+        nbBio = 0
+        for j in range(len(list_nutriscore)):
+            value = list_nutriscore[j]["label_bio"]
+            if(value == "y"):
+                nbBio = nbBio + 1
+        print("")
+        print("pour les produits de la catégorie ", convertNutriscore(i, "nutriscore"), "(nutriscore), il y a :")
+        percent = "{:.2f}".format(nbBio / len(list_nutriscore) * 100)
+        print(nbBio, "(", percent, "%) produits bio")
+
+
+def compareNovaBio(list_db):
+    for i in range(1, 5):
+        list_nova = getListByScore(i, "nova", list_db)
+        nbBio = 0
+        for j in range(len(list_nova)):
+            value = list_nova[j]["label_bio"]
+            if(value == "y"):
+                nbBio = nbBio + 1
+        print("")
+        print("pour les produits de la categorie ", i, "(nova), il y a :")
+        percent = 0
+        if(len(list_nova) !=0):
+            percent = "{:.2f}".format(nbBio / len(list_nova) * 100)
+        print(nbBio, "(", percent, "%) produits bio")
