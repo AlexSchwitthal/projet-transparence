@@ -166,6 +166,20 @@ def getCritereNameByNumber(number):
     elif(number == 3):
         return "salt_100g"
 
+def getCritereNameNovaYuka(number):
+    if(number == 0):
+        return "energy_100g"
+    elif(number == 1):
+        return "saturated-fat_100g"
+    elif(number == 2):
+        return "sugars_100g"
+    elif(number == 3):
+        return "sodium_100g"
+    elif(number == 4):
+        return "proteins_100g"
+    elif(number == 5):
+        return "fiber_100g"
+    
 def converYukaInNutriscore(yuka):
     if(yuka <= 20):
         return 1
@@ -186,6 +200,16 @@ def duelNutriscoreYuka(nutriscore, yuka):
         return "yuka"
     else:
         return "nutriscore"
+
+def getListSeverity(list_db, score_used):
+    list_elements = []
+    for i in range (len(list_db)):
+        nutriscore = list_db[i]["nutriscore"]
+        yuka = list_db[i]["score_yuka"]
+        result = duelNutriscoreYuka(nutriscore, yuka)
+        if(result == score_used):
+            list_elements.append(list_db[i])
+    return list_elements
 
 # regarde la répartition de la catégorie donnée sur l'ensemble des produits
 def getRepartitionCategorie(categorie, list_db):
@@ -369,3 +393,34 @@ def compareNovaBio(list_db):
         if(len(list_nova) !=0):
             percent = "{:.2f}".format(nbBio / len(list_nova) * 100)
         print(nbBio, "(", percent, "%) produits bio")
+        
+def yukaByColor(list_db, colorToSearch, numberToReach):
+    total_score = 0
+    nb_elements = 0
+    for i in range(len(list_db)):
+        number_of_color_elements = 0
+        for j in range(4):
+            critere_name = getCritereNameByNumber(j)
+            color = feuxTricolore(list_db[i], critere_name)
+            if(color == colorToSearch):
+                number_of_color_elements = number_of_color_elements + 1
+                if(number_of_color_elements >= numberToReach):
+                    total_score = total_score + list_db[i]["score_yuka"]
+                    nb_elements = nb_elements + 1
+                    break
+        else:
+            continue
+        
+    avg_score = "{:.2f}".format(total_score / nb_elements)
+    print("la moyenne des produits yuka ayant au moins", numberToReach, "feux de couleur", colorToSearch, "est de", avg_score)
+
+def detailsNutriscoreYuka(list_db, score_used):
+    list_score = getListSeverity(list_db, score_used)
+    list_criteres = [0, 0, 0, 0, 0, 0]
+    for i in range(len(list_score)):
+        for j in range(6):
+            list_criteres[j] = list_criteres[j] + list_score[i]["criteres"][j]
+    print("\npour les produits notés plus sévèrement selon", score_used, "nous avons :")
+    for i in range(6):
+        avg = "{:.2f}".format(list_criteres[i] / len(list_score))
+        print("pour le critère", getCritereNameNovaYuka(i), "la moyenne est de ", avg)

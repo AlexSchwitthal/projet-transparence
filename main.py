@@ -38,8 +38,9 @@ list_items3, label_DB3 = readDB3()
 #defineFeuxTricolore(list_items3, label_DB3)  
 #writeDB('Datasets/DB3_score_lamdba_'+str(seuil3), label_DB3, list_items3) 
 
-
+print("lol")
 print(list_items3[0])
+print(list_items3[0]["criteres"])
 #print("\n\n\n ========= STAT REPARTITION ====== \n")
 #getRepartitionCategorie("nutriscore", list_items3)
 #print("\n")
@@ -55,6 +56,9 @@ print(list_items3[0])
 
 print("\n\n\n ==== NUTRISCORE / YUKA ======\n")
 compareNutriscoreYuka(list_items3)
+detailsNutriscoreYuka(list_items3, "yuka")
+detailsNutriscoreYuka(list_items3, "nutriscore")
+detailsNutriscoreYuka(list_items3, "equals")
 
 #for i in range(len(list_items3)):
  #   print("yuka : ", list_items3[i]['score_yuka'], " |||  nutriscore : ", list_items3[i]['nutriscore'])
@@ -63,8 +67,13 @@ compareNutriscoreYuka(list_items3)
    
 print("\n\n\n ==== YUKA / NOVA ======\n")
 compareYukaNova(list_items3)
-   
-print("\n\n\n ==== BIO ======\n")
-getRepartitionBio(list_items3)
-compareNutriscoreBio(list_items3)
-compareNovaBio(list_items3)
+
+
+print("\n\n\n ==== YUKA / FEU ======\n")
+yukaByColor(list_items3, "red", 3)
+
+#print("\n\n\n ==== BIO ======\n")
+#getRepartitionBio(list_items3)
+#compareNutriscoreBio(list_items3)
+#compareNovaBio(list_items3)
+
