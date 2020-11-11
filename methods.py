@@ -127,9 +127,17 @@ def defineFeuxTricolore(list_aliments, label):
         aliment['color_sugars'] = feuxTricolore(aliment, "sugars_100g")
         aliment['color_salt'] = feuxTricolore(aliment, "salt_100g")
         
+        
+        
+
+        
 # ----------------------------------
 # ANALYSE
 # ----------------------------------
+
+
+
+
 
 # convertie le nombre nutriscore en sa lettre correspondante
 def convertNutriscore(number, categorie):
@@ -156,6 +164,7 @@ def getListByScore(score, categorie, list_db):
     return list_elements
 
 
+#retourne le critère des feux selon le nombre saisie
 def getCritereNameByNumber(number):
     if(number == 0):
         return "fat_100g"
@@ -166,6 +175,7 @@ def getCritereNameByNumber(number):
     elif(number == 3):
         return "salt_100g"
 
+#retourne le critère général selon le nombre saisie
 def getCritereNameNovaYuka(number):
     if(number == 0):
         return "energy_100g"
@@ -180,6 +190,7 @@ def getCritereNameNovaYuka(number):
     elif(number == 5):
         return "fiber_100g"
     
+#retourne une "classe" yuka correspondant au nutriscore
 def converYukaInNutriscore(yuka):
     if(yuka <= 20):
         return 1
@@ -191,7 +202,8 @@ def converYukaInNutriscore(yuka):
         return 4
     elif(yuka <= 100):
         return 5
-    
+
+#retourne la notation la plus sévère entre yuka et nutriscore    
 def duelNutriscoreYuka(nutriscore, yuka):
     conversion_yuka = converYukaInNutriscore(yuka)
     if(conversion_yuka == nutriscore):
@@ -201,6 +213,7 @@ def duelNutriscoreYuka(nutriscore, yuka):
     else:
         return "nutriscore"
 
+#retourne la liste de tout les produits où le "score_used" est le plus sévère
 def getListSeverity(list_db, score_used):
     list_elements = []
     for i in range (len(list_db)):
@@ -309,7 +322,9 @@ def nutriscoreByColor(list_db, colorToSearch, numberToReach):
         print("pour les ", len(list_nutriscore), " produits de la categorie ", convertNutriscore(i, "nutriscore"), "(nutriscore), il y a : ")  
         print(number_of_color, " (", percent, "%) ayant au moins ", numberToReach, " feu de couleur ", colorToSearch, "\n")
               
-                         
+
+# écrit le score yuka et nutriscore moyen pour la totalité des produits
+# puis la répartition de sévérité entre yuka et nutriscore                        
 def compareNutriscoreYuka(list_db):
     size = len(list_db)
     total_yuka = 0
@@ -336,7 +351,8 @@ def compareNutriscoreYuka(list_db):
     print("\ndans ", total_yuka, "(", percent_yuka, "%) cas, yuka est plus sévère que nutriscore")
     print("dans ", total_nutriscore, "(", percent_nutriscore, "%) cas, nutriscore est plus sévère que yuka")
     print("dans ", total_egalite,"(", percent_egalite, "%) cas, les deux note sont similaires")
-            
+           
+# écrit le score yuka moyen pour chaque catégorie nova   
 def compareYukaNova(list_db):
     for i in range(1, 5):
         score_yuka = 0
@@ -353,6 +369,7 @@ def compareYukaNova(list_db):
         print("pour les ", len(list_nova), " produits de la categorie ", i, "(nova), il y a :")
         print("une moyenne de score des produits yuka de ", avg_yuka)
 
+# écrit la répartition des produits bio et non bio de la base de données 
 def getRepartitionBio(list_db):
     nbBio = 0
     size = len(list_db)
@@ -364,7 +381,8 @@ def getRepartitionBio(list_db):
     print("il y a un total de ", size, " produits")
     print(nbBio, "(", percent, "%) produits sont bio")
     print((size-nbBio), "(", notBioPercent, "%) ne sont pas bio")
-                 
+       
+# écrit pour chaque catégorie de nutriscore, la répartition de produits bio          
 def compareNutriscoreBio(list_db):
     for i in range(5, 0, -1):
         list_nutriscore = getListByScore(i, "nutriscore", list_db)
@@ -378,7 +396,7 @@ def compareNutriscoreBio(list_db):
         percent = "{:.2f}".format(nbBio / len(list_nutriscore) * 100)
         print(nbBio, "(", percent, "%) produits bio")
 
-
+# écrit pour chaque catégorie de nova, la répartition de produits bio
 def compareNovaBio(list_db):
     for i in range(1, 5):
         list_nova = getListByScore(i, "nova", list_db)
@@ -393,7 +411,8 @@ def compareNovaBio(list_db):
         if(len(list_nova) !=0):
             percent = "{:.2f}".format(nbBio / len(list_nova) * 100)
         print(nbBio, "(", percent, "%) produits bio")
-        
+
+# écrit le score yuka moyen pour les produits contenant au moins X (numberToReach) feu de la couleur Y (colorToSearch)        
 def yukaByColor(list_db, colorToSearch, numberToReach):
     total_score = 0
     nb_elements = 0
@@ -414,6 +433,7 @@ def yukaByColor(list_db, colorToSearch, numberToReach):
     avg_score = "{:.2f}".format(total_score / nb_elements)
     print("la moyenne des produits yuka ayant au moins", numberToReach, "feux de couleur", colorToSearch, "est de", avg_score)
 
+# écrit les valeurs moyennes des produits notés les plus sévèrement selon nutriscore et nova
 def detailsNutriscoreYuka(list_db, score_used):
     list_score = getListSeverity(list_db, score_used)
     list_criteres = [0, 0, 0, 0, 0, 0]
@@ -424,3 +444,21 @@ def detailsNutriscoreYuka(list_db, score_used):
     for i in range(6):
         avg = "{:.2f}".format(list_criteres[i] / len(list_score))
         print("pour le critère", getCritereNameNovaYuka(i), "la moyenne est de ", avg)
+        
+
+# écrit la répartition moyenne des produits nutriscore selon une classification d'electre (optimiste ou pessimiste)
+def compareElectreNutriscore(list_db, type_score):
+    for i in range(5, 0, -1):
+        list_electre = getListByScore(i, type_score, list_db)
+        list_nutriscore = [0,0,0,0,0]
+        for j in range(len(list_electre)):
+            value = int(list_electre[j]["nutriscore"])
+            list_nutriscore[value-1] = list_nutriscore[value-1] + 1
+        print("")
+        print("pour les", len(list_electre), "produits de la catégorie ", convertNutriscore(i, "nutriscore"), "(electre), il y a :")
+        for j in range(5, 0, -1):
+            percent = 0
+            if(len(list_electre) != 0):
+                percent = "{:.2f}".format(list_nutriscore[j-1] / len(list_electre) * 100)
+            print(list_nutriscore[j-1], "(", percent, "%) produits de la categorie nutriscore ", convertNutriscore(j, "nutriscore"))
+ 
