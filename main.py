@@ -21,26 +21,24 @@ list_profils = [[100,0,0,0,100,100],
                 [1850,20,4,0.6,3,2.5],
                 [10000,100,100,100,0,0]]
 
-#seuil1 = 0.7
+seuil1 = 0.7
 list_cereals, list_cereals_labels = readDB1()  
-#defineElectreScore(list_cereals, list_poids, list_profils, seuil1, list_cereals_labels)  
+defineElectreScore(list_cereals, list_poids, list_profils, seuil1, list_cereals_labels)  
 #writeDB('Datasets/DB1_score_lamdba_'+str(seuil1), list_cereals_labels, list_cereals) 
 
-#seuil2 = 0.7
+seuil2 = 0.7
 list_items2, label_DB2 = readDB2()
-#defineElectreScore(list_items2, list_poids, list_profils, seuil2, label_DB2)
+defineElectreScore(list_items2, list_poids, list_profils, seuil2, label_DB2)
 #defineFeuxTricolore(list_items2, label_DB2)  
 #writeDB('Datasets/DB2_score_lamdba_'+str(seuil2), label_DB2, list_items2) 
 
-#seuil3 = 0.7
+seuil3 = 0.7
 list_items3, label_DB3 = readDB3()
-#defineElectreScore(list_items3, list_poids, list_profils, seuil3, label_DB3)
+defineElectreScore(list_items3, list_poids, list_profils, seuil3, label_DB3)
 #defineFeuxTricolore(list_items3, label_DB3)  
 #writeDB('Datasets/DB3_score_lamdba_'+str(seuil3), label_DB3, list_items3) 
 
-print("lol")
-print(list_items3[0])
-print(list_items3[0]["criteres"])
+
 #print("\n\n\n ========= STAT REPARTITION ====== \n")
 #getRepartitionCategorie("nutriscore", list_items3)
 #print("\n")
@@ -54,26 +52,32 @@ print(list_items3[0]["criteres"])
 #print("\n\n\n====== FEUX TRICOLORE =======\n")
 #nutriscoreByColor(list_items3, "green", 4)
 
-print("\n\n\n ==== NUTRISCORE / YUKA ======\n")
-compareNutriscoreYuka(list_items3)
-detailsNutriscoreYuka(list_items3, "yuka")
-detailsNutriscoreYuka(list_items3, "nutriscore")
-detailsNutriscoreYuka(list_items3, "equals")
+#print("\n\n\n ==== NUTRISCORE / YUKA ======\n")
+#compareNutriscoreYuka(list_items3)
+#detailsNutriscoreYuka(list_items3, "yuka")
+#detailsNutriscoreYuka(list_items3, "nutriscore")
+#detailsNutriscoreYuka(list_items3, "equals")
 
 #for i in range(len(list_items3)):
  #   print("yuka : ", list_items3[i]['score_yuka'], " |||  nutriscore : ", list_items3[i]['nutriscore'])
   #  print(duelNutriscoreYuka(list_items3[i]['nutriscore'], list_items3[i]['score_yuka']))
    # print("")
    
-print("\n\n\n ==== YUKA / NOVA ======\n")
-compareYukaNova(list_items3)
+#print("\n\n\n ==== YUKA / NOVA ======\n")
+#compareYukaNova(list_items3)
 
 
-print("\n\n\n ==== YUKA / FEU ======\n")
-yukaByColor(list_items3, "red", 3)
+#print("\n\n\n ==== YUKA / FEU ======\n")
+#yukaByColor(list_items3, "red", 3)
 
 #print("\n\n\n ==== BIO ======\n")
 #getRepartitionBio(list_items3)
 #compareNutriscoreBio(list_items3)
 #compareNovaBio(list_items3)
 
+
+print("\n\n\n ==== ELECTRE TRI / NUTRISCORE ======\n")
+print("\n -- PESSIMIST --\n")
+compareElectreNutriscore(list_items2, 'pessimist_score')
+print("\n\n -- OPTIMIST --\n")
+compareElectreNutriscore(list_items2, 'optimist_score')
