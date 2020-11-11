@@ -186,8 +186,8 @@ def readDB3():
         item['label_bio']=sheet.row_values(i)[18]
         list_items.append(item)
         
-    print(count1, count2, count3, count4, count5)
-    print(label_OFD)
+    #print(count1, count2, count3, count4, count5)
+    #print(label_OFD)
     return list_items, label_OFD
 
 def writeDB(name, label, list_items):
@@ -226,5 +226,6 @@ def writeDB(name, label, list_items):
                 sheet.write(count, index, value)
                 index += 1
         count += 1        
-    id = datetime.now().strftime("%d_%m_%H_%M")            
-    workbook.save(name + '_' + id + '.xls')
+    #id = datetime.now().strftime("%d_%m_%H_%M")            
+    #workbook.save(name + '_' + id + '.xls')
+    workbook.save(name + '_' + '.xls')
