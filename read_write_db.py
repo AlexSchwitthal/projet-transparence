@@ -1,16 +1,11 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Oct 30 15:05:30 2020
 
-@author: boris
-"""
-
-#nutriscore de A à E ie 5 à 1
-A = 5
-E = 1
 import xlrd
 import xlwt
-from datetime import datetime
+
+#nutriscore de A à E ie 5 à 1
+#A = 5
+#E = 1
 
 def readDB1():
     loc = ("Datasets/OpenFood_Petales.xlsx")
@@ -42,7 +37,7 @@ def readDB1():
         cereal['criteres'].append(sheet.row_values(i)[7])
         cereal['criteres'].append(sheet.row_values(i)[6]) 
         list_cereals.append(cereal)
-    #print(list_cereals_labels)    
+   
     return list_cereals, list_cereals_labels
 
 def readDB2():
@@ -112,8 +107,9 @@ def readDB2():
         item['criteres_feux'].append(sheet.row_values(i)[16])
         list_items.append(item)
         
-    print(count1, count2, count3, count4, count5)
-    print(label_OFD)
+    #To print number of items from each nutriscore
+    #print(count1, count2, count3, count4, count5)
+
     return list_items, label_OFD
 
 def readDB3():
@@ -185,9 +181,10 @@ def readDB3():
         item['score_yuka']=sheet.row_values(i)[17]
         item['label_bio']=sheet.row_values(i)[18]
         list_items.append(item)
-        
+     
+    #To print number of items from each nutriscore
     #print(count1, count2, count3, count4, count5)
-    #print(label_OFD)
+    
     return list_items, label_OFD
 
 def writeDB(name, label, list_items):
@@ -225,7 +222,6 @@ def writeDB(name, label, list_items):
             else :
                 sheet.write(count, index, value)
                 index += 1
-        count += 1        
-    #id = datetime.now().strftime("%d_%m_%H_%M")            
-    #workbook.save(name + '_' + id + '.xls')
-    workbook.save(name + '_' + '.xls')
+        count += 1 
+
+    workbook.save(name + '.xls')
