@@ -107,14 +107,9 @@ def readDB2():
         item['criteres_feux'].append(sheet.row_values(i)[16])
         list_items.append(item)
         
-<<<<<<< HEAD
-    #print(count1, count2, count3, count4, count5)
-    #print(label_OFD)
-=======
     #To print number of items from each nutriscore
     #print(count1, count2, count3, count4, count5)
 
->>>>>>> ffb5bd3597405e22f92991fff0fad0fa002c159e
     return list_items, label_OFD
 
 def readDB3():
