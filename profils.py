@@ -178,43 +178,43 @@ def checkError(total):
 
 #checkError(False)
 
-#seuil = 0.5
-#for i in range (3):
-    #seuil = 0.5 + i*0.1
+seuil = 0.5
+for i in range (3):
+    seuil = 0.5 + i*0.1
     
     #avec poids de base
-    #list_items, label_DB = readDB2()
-    #list_profils = defineProfileWithNutriscore(list_items) 
-    #defineElectreScore(list_items, list_poids, list_profils, seuil, label_DB)
-    #defineFeuxTricolore(list_items, label_DB)  
-    #writeDB('Datasets/DB2_score_lamdba_'+str(seuil)+'_poids_de_base_profils_Nutriscore', label_DB, list_items) 
+    list_items, label_DB = readDB3()
+    list_profils = defineProfileWithNutriscore(list_items) 
+    defineElectreScore(list_items, list_poids, list_profils, seuil, label_DB)
+    defineFeuxTricolore(list_items, label_DB)  
+    writeDB('Datasets/DB3_score_lamdba_'+str(seuil)+'_poids_de_base_profils_Nutriscore', label_DB, list_items) 
 
-    #list_items, label_DB = readDB2()
-    #defineElectreScore(list_items, list_poids, list_profilsDB2, seuil, label_DB)
-    #defineFeuxTricolore(list_items, label_DB)  
-    #writeDB('Datasets/DB2_score_lamdba_'+str(seuil)+'_poids_de_base_profils_Quintiles_DB2', label_DB, list_items)
+    list_items, label_DB = readDB3()
+    defineElectreScore(list_items, list_poids, list_profilsDB3, seuil, label_DB)
+    defineFeuxTricolore(list_items, label_DB)  
+    writeDB('Datasets/DB3_score_lamdba_'+str(seuil)+'_poids_de_base_profils_Quintiles_DB3', label_DB, list_items)
     
-    #list_items, label_DB = readDB2()
-    #defineElectreScore(list_items, list_poids, list_profilsAll, seuil, label_DB)
-    #defineFeuxTricolore(list_items, label_DB)  
-    #writeDB('Datasets/DB2_score_lamdba_'+str(seuil)+'_poids_de_base_profils_Quintiles_All', label_DB, list_items)
+    list_items, label_DB = readDB3()
+    defineElectreScore(list_items, list_poids, list_profilsAll, seuil, label_DB)
+    defineFeuxTricolore(list_items, label_DB)  
+    writeDB('Datasets/DB3_score_lamdba_'+str(seuil)+'_poids_de_base_profils_Quintiles_All', label_DB, list_items)
     
     #avec poids favorisant critères négatifs
-    #list_profils = defineProfileWithNutriscore(list_items) 
-    #list_items, label_DB = readDB2()
-    #defineElectreScore(list_items, list_poids1, list_profils, seuil, label_DB)
-    #defineFeuxTricolore(list_items, label_DB)  
-    #writeDB('Datasets/DB2_score_lamdba_'+str(seuil)+'_poids_fav_criteres_negatifs_profils_Nutriscore', label_DB, list_items) 
+    list_profils = defineProfileWithNutriscore(list_items) 
+    list_items, label_DB = readDB3()
+    defineElectreScore(list_items, list_poids1, list_profils, seuil, label_DB)
+    defineFeuxTricolore(list_items, label_DB)  
+    writeDB('Datasets/DB3_score_lamdba_'+str(seuil)+'_poids_fav_criteres_negatifs_profils_Nutriscore', label_DB, list_items) 
 
-    #list_items, label_DB = readDB2()
-    #defineElectreScore(list_items, list_poids1, list_profilsDB2, seuil, label_DB)
-    #defineFeuxTricolore(list_items, label_DB)  
-    #writeDB('Datasets/DB2_score_lamdba_'+str(seuil)+'_poids_fav_criteres_negatifs_profils_Quintiles_DB2', label_DB, list_items)
+    list_items, label_DB = readDB3()
+    defineElectreScore(list_items, list_poids1, list_profilsDB3, seuil, label_DB)
+    defineFeuxTricolore(list_items, label_DB)  
+    writeDB('Datasets/DB3_score_lamdba_'+str(seuil)+'_poids_fav_criteres_negatifs_profils_Quintiles_DB3', label_DB, list_items)
     
-    #list_items, label_DB = readDB2()
-    #defineElectreScore(list_items, list_poids1, list_profilsAll, seuil, label_DB)
-    #defineFeuxTricolore(list_items, label_DB) 
-    #writeDB('Datasets/DB2_score_lamdba_'+str(seuil)+'_poids_fav_criteres_negatifs_profils_Quintiles_All', label_DB, list_items)
+    list_items, label_DB = readDB3()
+    defineElectreScore(list_items, list_poids1, list_profilsAll, seuil, label_DB)
+    defineFeuxTricolore(list_items, label_DB) 
+    writeDB('Datasets/DB3_score_lamdba_'+str(seuil)+'_poids_fav_criteres_negatifs_profils_Quintiles_All', label_DB, list_items)
 
 #seuil = 0.5
 #for i in range (3):
