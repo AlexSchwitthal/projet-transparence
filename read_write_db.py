@@ -112,8 +112,8 @@ def readDB2():
         item['criteres_feux'].append(sheet.row_values(i)[16])
         list_items.append(item)
         
-    print(count1, count2, count3, count4, count5)
-    print(label_OFD)
+    #print(count1, count2, count3, count4, count5)
+    #print(label_OFD)
     return list_items, label_OFD
 
 def readDB3():

@@ -323,6 +323,28 @@ def nutriscoreByColor(list_db, colorToSearch, numberToReach):
         print(number_of_color, " (", percent, "%) ayant au moins ", numberToReach, " feu de couleur ", colorToSearch, "\n")
               
 
+def electreByColor(list_db, colorToSearch, numberToReach, score_electre, type_score):
+    list_score = getListByScore(score_electre, type_score, list_db)
+    number_of_color = 0
+    for j in range(len(list_score)):
+        number_of_color_elements = 0
+        for k in range(4):
+            critere_name = getCritereNameByNumber(k)
+            color = feuxTricolore(list_score[j], critere_name)
+            if(color == colorToSearch):
+                number_of_color_elements = number_of_color_elements + 1
+                if(number_of_color_elements >= numberToReach):
+                    number_of_color = number_of_color + 1
+                    break
+        else:
+            continue
+    percent = 0
+    if(len(list_score) != 0): 
+        percent = "{:.2f}".format(number_of_color / len(list_score)  * 100)
+    #print("pour les ", len(list_nutriscore), " produits de la categorie ", convertNutriscore(i, "nutriscore"), "(nutriscore), il y a : ")  
+    print(number_of_color, " (", percent, "%) ayant au moins ", numberToReach, " feu de couleur ", colorToSearch)
+              
+
 # écrit le score yuka et nutriscore moyen pour la totalité des produits
 # puis la répartition de sévérité entre yuka et nutriscore                        
 def compareNutriscoreYuka(list_db):
@@ -376,9 +398,12 @@ def getRepartitionBio(list_db):
     for i in range(size):
         if(list_db[i]['label_bio'] == 'y'):
             nbBio = nbBio + 1
-    percent = "{:.2f}".format(nbBio / size * 100)
-    notBioPercent = "{:.2f}".format((size - nbBio) / size * 100)
-    print("il y a un total de ", size, " produits")
+    percent = 0
+    notBioPercent = 0
+    if(size != 0):
+        percent = "{:.2f}".format(nbBio / size * 100)
+        notBioPercent = "{:.2f}".format((size - nbBio) / size * 100)
+    #print("il y a un total de ", size, " produits")
     print(nbBio, "(", percent, "%) produits sont bio")
     print((size-nbBio), "(", notBioPercent, "%) ne sont pas bio")
        
@@ -446,6 +471,7 @@ def detailsNutriscoreYuka(list_db, score_used):
         print("pour le critère", getCritereNameNovaYuka(i), "la moyenne est de ", avg)
         
 
+# DEPRECATED
 # écrit la répartition moyenne des produits nutriscore selon une classification d'electre (optimiste ou pessimiste)
 def compareElectreNutriscore(list_db, type_score):
     for i in range(5, 0, -1):
@@ -462,3 +488,66 @@ def compareElectreNutriscore(list_db, type_score):
                 percent = "{:.2f}".format(list_nutriscore[j-1] / len(list_electre) * 100)
             print(list_nutriscore[j-1], "(", percent, "%) produits de la categorie nutriscore ", convertNutriscore(j, "nutriscore"))
  
+#DB1 : nutriscore
+#DB2 : nutriscore, nova, feu
+#DB3 : nutriscore, nova, feu, yuka, label bio, additives
+def analyseElectre(list_db, type_db, type_score):
+    for i in range(5, 0, -1):
+        print("\n== CATEGORIE", convertNutriscore(i, "nutriscore"), "===")
+        list_electre = getListByScore(i, type_score, list_db)
+        if(len(list_electre) == 0):
+            print("il n'y a aucun produit dans cette catégorie")
+        else:
+            list_nutriscore = [0,0,0,0,0]
+            list_nova = [0,0,0,0]
+            score_yuka = 0
+            score_additifs = 0
+            for j in range(len(list_electre)):
+                value_nutriscore = int(list_electre[j]["nutriscore"])
+                list_nutriscore[value_nutriscore-1] = list_nutriscore[value_nutriscore-1] + 1
+                
+                if(type_db != "DB1"):
+                    value_nova = int(list_electre[j]["nova"])
+                    list_nova[value_nova-1] = list_nova[value_nova-1] + 1
+                    
+                    if(type_db != "DB2"):
+                        score_yuka = score_yuka + list_electre[j]["score_yuka"]
+                        
+                        score_additifs = score_additifs + list_electre[j]["nb_additifs"]
+            
+                        
+            print("")
+            print("pour les", len(list_electre), "produits de la catégorie ", convertNutriscore(i, "nutriscore"), "(electre), il y a :")
+            for j in range(5, 0, -1):
+                percent = 0
+                if(len(list_electre) != 0):
+                    percent = "{:.2f}".format(list_nutriscore[j-1] / len(list_electre) * 100)
+                print(list_nutriscore[j-1], "(", percent, "%) produits de la categorie nutriscore ", convertNutriscore(j, "nutriscore"))
+    
+            if(type_db != "DB1"):
+                print("")
+                for j in range(len(list_nova)):
+                    percent = 0
+                    if(len(list_electre) != 0):
+                        percent = "{:.2f}".format(list_nova[j] / len(list_electre) * 100)
+                    print(list_nova[j], "(", percent, "%) produits de la categorie nova ", j+1)
+                
+                print("")
+                electreByColor(list_db, "green", 3, i, type_score)
+                electreByColor(list_db, "orange", 3, i, type_score)
+                electreByColor(list_db, "red", 3, i, type_score)
+                
+                if(type_db != "DB2"):
+                    print("")
+                    avg_yuka = 0
+                    if(len(list_electre) != 0):
+                        avg_yuka = "{:.2f}".format(score_yuka / len(list_electre))
+                    print("la moyenne de note yuka sur les produits est de ", avg_yuka)
+                
+                    print("")
+                    getRepartitionBio(list_electre)
+                    
+                    avg_additifs = 0
+                    if(len(list_electre) != 0):
+                        avg_additifs = "{:.2f}".format(score_additifs / len(list_electre))
+                    print("\nil y a en moyenne", avg_additifs, "additif(s) dans chaque produits de cette catégorie")
