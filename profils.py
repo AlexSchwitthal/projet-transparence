@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from methods import *
+from electre_tri_methods import *
 from read_write_db import *
 
 

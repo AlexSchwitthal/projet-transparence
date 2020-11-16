@@ -8,6 +8,7 @@ This is a temporary script file.
 A = 5
 E = 1
 from methods import *
+from electre_tri_methods import *
 from read_write_db import *
 from profils import *
 
