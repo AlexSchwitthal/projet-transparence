@@ -47,12 +47,12 @@ list_profilsDB2 = [[-1 ,-1   ,-1   ,-1   ,100,100],
                 [10000,100 ,100 ,100 ,-1  ,-1]]
 
 #Sur DB3
-list_profilsDB3 = [[0 ,0   ,0  ,0   ,100,100],
+list_profilsDB3 = [[-1 ,-1   ,-1  ,-1   ,100,100],
                 [448, 0.4,0.5,0.332,23,1.2],
                 [689 ,1.5,0.7,0.48 ,21,0.1],
                 [861 ,2.5,1  ,0.6  ,17,0  ],
                 [1047,4.5,1.5,0.84 ,13,0  ],
-                [10000,100 ,100 ,100 ,0  ,0]]
+                [10000,100 ,100 ,100 ,-1  ,-1]]
 
 
  
@@ -76,13 +76,13 @@ def defineProfileWithNutriscore(list_items):
         prof1[3][i] = (sum[3][i]+ sum[4][i])/2
 
     list_profils3 = []
-    list_profils3 = [[-100,-100,-100,-100,10000,10000]]
+    list_profils3 = [[-1,-1,-1,-1,100,100]]
 
     list_profils3.append(prof1[3])     
     list_profils3.append(prof1[2]) 
     list_profils3.append(prof1[1]) 
     list_profils3.append(prof1[0]) 
-    list_profils3.append([10000,10000,10000,10000,-100,-100]) 
+    list_profils3.append([10000,100,100,100,-1,-1]) 
     
     return list_profils3
 
