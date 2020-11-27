@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from methods import *
 from electre_tri_methods import *
@@ -47,44 +46,49 @@ list_profilsDB2 = [[-1 ,-1   ,-1   ,-1   ,100,100],
                 [10000,100 ,100 ,100 ,-1  ,-1]]
 
 #Sur DB3
-list_profilsDB3 = [[-1 ,-1   ,-1  ,-1   ,100,100],
-                [448, 0.4,0.5,0.332,23,1.2],
-                [689 ,1.5,0.7,0.48 ,21,0.1],
-                [861 ,2.5,1  ,0.6  ,17,0  ],
-                [1047,4.5,1.5,0.84 ,13,0  ],
-                [10000,100 ,100 ,100 ,-1  ,-1]]
+list_profilsDB3 = [[-1 ,-1   ,-1  ,-1, 100, 100],
+                [448, 0.4, 0.5, 0.332, 23, 1.2],
+                [689, 1.5, 0.7, 0.48, 21, 0.1],
+                [861, 2.5,1, 0.6, 17, 0],
+                [1047, 4.5, 1.5, 0.84, 13, 0],
+                [10000, 100, 100, 100, -1, -1]]
 
 
- 
-def defineProfileWithNutriscore(list_items):
-    sum = [[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0]]
-    count = [0.0,0.0,0.0,0.0,0.0]
-    for item in list_items:
-        for i in range(6):
-            sum[item['nutriscore']-1][i] += item['criteres'][i]
-             
-        count[item['nutriscore']-1] += 1
-    for j in range(5):
-        for i in range(6):
-            sum[j][i] = (sum[j][i])/count[j]
 
-    prof1 = [[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0]]
-    for i in range (6):
-        prof1[0][i] = (sum[0][i]+ sum[1][i])/2
-        prof1[1][i] = (sum[1][i]+ sum[2][i])/2
-        prof1[2][i] = (sum[2][i]+ sum[3][i])/2
-        prof1[3][i] = (sum[3][i]+ sum[4][i])/2
-
-    list_profils3 = []
-    list_profils3 = [[-1,-1,-1,-1,100,100]]
-
-    list_profils3.append(prof1[3])     
-    list_profils3.append(prof1[2]) 
-    list_profils3.append(prof1[1]) 
-    list_profils3.append(prof1[0]) 
-    list_profils3.append([10000,100,100,100,-1,-1]) 
+def computeCriteriaAverageByNutriscoreClass(list_items):
+    # each key represent nutriscore class A = 1, ..., E = 5
+    sum = {"1" : {"count" : 0.0, "criteres" : [0, 0, 0, 0, 0, 0]},
+           "2" : {"count" : 0.0, "criteres" : [0, 0, 0, 0, 0, 0]},
+           "3" : {"count" : 0.0, "criteres" : [0, 0, 0, 0, 0, 0]},
+           "4" : {"count" : 0.0, "criteres" : [0, 0, 0, 0, 0, 0]},
+           "5" : {"count" : 0.0, "criteres" : [0, 0, 0, 0, 0, 0]}}
     
-    return list_profils3
+    for item in list_items:
+        nutriscoreClass = str(item['nutriscore'])
+        sum[nutriscoreClass]["count"] += 1
+        for i in range(6):
+            sum[nutriscoreClass]["criteres"][i] += item['criteres'][i] 
+        
+    for nutriscoreClass in sum.keys():
+        for critere in range(6):
+            sum[nutriscoreClass]["criteres"][critere] = (sum[nutriscoreClass]["criteres"][critere] / sum[nutriscoreClass]["count"])
+            
+    return sum
+
+
+def defineProfileWithNutriscore(list_items):
+    sum = computeCriteriaAverageByNutriscoreClass(list_items)
+    print(sum)
+    list_profile = []
+    list_profile.append([-1, -1, -1, -1, 100, 100])
+    
+    for i in range(4, 1, -1):
+        profile = [0, 0, 0, 0, 0, 0]
+        for critere in range(6):
+            profile[critere] = (sum[str(i)]["criteres"][critere] + sum[str(i+1)]["criteres"][critere]) / 2
+        list_profile.append(profile)
+    list_profile.append([10000,100,100,100,-1,-1])
+    return list_profile
 
 
 # Use to generate results for all DB
@@ -201,5 +205,4 @@ def generateResults():
         defineFeuxTricolore(list_items, label_DB) 
         writeDB('Datasets/DB3_score_lamdba_'+str(seuil)+'_poids_fav_criteres_negatifs_profils_Quintiles_All', label_DB, list_items)
         
-#generateResults()        
-        
+#generateResults()      
