@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 def feuxTricolore(aliment, critere):
 
@@ -62,57 +61,53 @@ def defineFeuxTricolore(list_aliments, label):
 
 # convertie le nombre nutriscore en sa lettre correspondante
 def convertNutriscore(number, categorie):
+    translation = {"1" : "E",
+                   "2" : "D",
+                   "3" : "C",
+                   "4" : "B",
+                   "5" : "A"}
+    
     if(categorie == "nutriscore"):
-        if(number == 1):
-            return "E"
-        elif(number == 2):
-            return "D"
-        elif(number == 3):
-            return "C"
-        elif(number == 4):
-            return "B"
-        elif(number == 5):
-            return "A"
+        return translation[str(number)]
     else:
         return number
- 
+
+
 # retourne la liste des produits ayant un score donné dans une catégorie donnée
 def getListByScore(score, categorie, list_db):
     list_elements = []
+    
     for i in range (len(list_db)):
         if(int(list_db[i][categorie]) == score):
             list_elements.append(list_db[i])
+            
     return list_elements
 
 
 #retourne le critère des feux selon le nombre saisie
-def getCritereNameByNumber(number):
-    if(number == 0):
-        return "fat_100g"
-    elif(number == 1):
-        return "saturated-fat_100g"
-    elif(number == 2):
-        return "sugars_100g"
-    elif(number == 3):
-        return "salt_100g"
+def getCritereNameByNumber(number): # renommer la methode en convertNumberToCritereName(number) ?
+    translation = {"0" : "fat_100g",
+                   "1" : "saturated-fat_100g",
+                   "2" : "sugars_100g",
+                   "3" : "salt_100g"}
+    
+    return translation[str(number)]
+
 
 #retourne le critère général selon le nombre saisie
 def getCritereNameNovaYuka(number):
-    if(number == 0):
-        return "energy_100g"
-    elif(number == 1):
-        return "saturated-fat_100g"
-    elif(number == 2):
-        return "sugars_100g"
-    elif(number == 3):
-        return "sodium_100g"
-    elif(number == 4):
-        return "proteins_100g"
-    elif(number == 5):
-        return "fiber_100g"
+    translation = {"0" : "energy_100g",
+                   "1" : "saturated-fat_100g",
+                   "2" : "sugars_100g",
+                   "3" : "sodium_100g",
+                   "4": "proteins_100g",
+                   "5" : "fiber_100g"}
+    
+    return translation[str(number)]
+    
     
 #retourne une "classe" yuka correspondant au nutriscore
-def converYukaInNutriscore(yuka):
+def convertYukaInNutriscore(yuka):
     if(yuka <= 20):
         return 1
     elif(yuka <= 40):
@@ -126,7 +121,7 @@ def converYukaInNutriscore(yuka):
 
 #retourne la notation la plus sévère entre yuka et nutriscore    
 def duelNutriscoreYuka(nutriscore, yuka):
-    conversion_yuka = converYukaInNutriscore(yuka)
+    conversion_yuka = convertYukaInNutriscore(yuka)
     if(conversion_yuka == nutriscore):
         return "equals"
     elif(conversion_yuka < nutriscore):
