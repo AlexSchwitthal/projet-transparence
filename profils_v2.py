@@ -82,13 +82,12 @@ def defineProfileWithNutriscore(list_items):
     list_profile = []
     list_profile.append([-1, -1, -1, -1, 100, 100])
     
-    for i in range(1, 4):
+    for i in range(4, 1, -1):
         profile = [0, 0, 0, 0, 0, 0]
         for critere in range(6):
             profile[critere] = (sum[str(i)]["criteres"][critere] + sum[str(i+1)]["criteres"][critere]) / 2
-            #print(sum[str(i)]["criteres"][critere])
         list_profile.append(profile)
-    
+    list_profile.append([10000,100,100,100,-1,-1])
     return list_profile
 
 
